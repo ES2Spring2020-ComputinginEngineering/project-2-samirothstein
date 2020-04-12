@@ -37,13 +37,13 @@ def assign_centroid(k,centroid,glucose,hemoglobin):
 #Has 4 parameters; k,centroids,glucose,hemoglobin
 #returns min_index
     distance_array = np.zeros((len(hemoglobin),k))
-    assignment = np.zeros(len(hemoglobin))
+    min_index = np.zeros(len(hemoglobin))
     for i in range(k):
         distance = np.sqrt((hemoglobin-centroid[i,0])**2 + (glucose-centroid[i,1])**2)
         distance_array[:,i] = distance
     min_index = np.argmin(distance_array, axis=1)
-    assignment[min_index] = min_index
-    return min_index
+#    assignment[min_index] = min_index
+    return min_index,distance
 
 def update_centroid(k, min_index, glucose, hemoglobin):
     #First, I created a random point. Then, I assigned the random point to a centroid.
@@ -69,13 +69,14 @@ def update_centroid(k, min_index, glucose, hemoglobin):
 #        centroid[i,1] = mean_gluc
 #        centroid[i,0] = mean_hemo
 #    return (mean_hemo,mean_gluc,centroid)
+   
+    hemoglobin_centroid = np.zeros((1))
+    glucose_centroid = np.zeros((1))
     centroid = np.zeros((k,2))
-    centroid_hemo = np.zeros((1))
-    centroid_glu = np.zeros((1))
     for i in range(centroid.shape[0]):
-        centroid_hemo = np.mean(hemoglobin[min_index == i])
-        centroid_glu = np.mean(glucose[min_index == i])
-        centroid[i] = np.append(centroid_hemo, centroid_glu) 
+        hemoglobin_centroid = np.mean(hemoglobin[min_index == i])
+        glucose_centroid= np.mean(glucose[min_index == i])
+        centroid[i] = np.append(hemoglobin_centroid, glucose_centroid) 
     return centroid
     
     
@@ -113,9 +114,9 @@ def graphingKMeans(glucose,hemoglobin,min_index,centroid):
 glucose,hemoglobin,classification = openckdfile()
 hemoglobin_scaled,glucose_scaled,classification = normalizeData(glucose,hemoglobin,classification)
 centroid = createCentroid(2)
-min_index = assign_centroid(2,centroid,glucose_scaled,hemoglobin_scaled)
+min_index,distance = assign_centroid(2,centroid,glucose_scaled,hemoglobin_scaled)
 #mean_hemo,mean_gluc,centroid = update_centroid(2,centroid,glucose,hemoglobin,min_index)
-centroid = update_centroid(1, min_index, glucose,hemoglobin)
+centroid = update_centroid(2, min_index, glucose,hemoglobin)
 
 graphingKMeans(glucose,hemoglobin,min_index,centroid)
 #main script
