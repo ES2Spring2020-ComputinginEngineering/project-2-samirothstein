@@ -14,7 +14,7 @@ def openckdfile():
 
 
 def normalizeData(glucose, hemoglobin, classification):
-#This functiont normalizes the values of the given glucose and hemoglobin values
+#This function normalizes the values of the given glucose and hemoglobin values
 #Normalizes it to a 0 or 1 with no units
 #Has 3 parameters: glucose, hemoglobin, classification
 #Returns 3 values: hemoglobin_scaled, glucose_scaled, classification
@@ -51,7 +51,7 @@ def testCase():
 def distanceArray(newglucose, newhemoglobin, glucose, hemoglobin):
 #This function finds the value of the distance between the test case and each data point
 #Takes 4 parameters: newglucose, newhemoglobin, glucose, hemoglobin
-#Returns the distance
+#Returns the distance array
     distance_array=np.sqrt((hemoglobin - newhemoglobin)**2 + (glucose - newglucose)**2)
     return distance_array
 
@@ -66,8 +66,8 @@ def nearestNeighborClassifier(newglucose, newhemoglobin, glucose, hemoglobin, cl
     return nearest_class
 
 
-def graphTestCase(newglucose, newhemoglobin, glucose, hemoglobin, classificiation):
-#This functions graphs the test case along with the normalized data that we already graphed
+def graphTestCase(newglucose, newhemoglobin, glucose, hemoglobin, classification):
+#This function graphs the test case along with the normalized data that we already graphed
 #Has 5 parameters: newglucose, newhemoglobin, glucose, hemoglobin, classificiation
 #This is a void function
     plt.figure()

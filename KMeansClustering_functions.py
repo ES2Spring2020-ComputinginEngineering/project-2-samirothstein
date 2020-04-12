@@ -25,26 +25,22 @@ def normalizeData(glucose, hemoglobin, classification):
 
 
 def createCentroid(k):
-    #this function is creating random centroids, k
-    #2 comes from the amount of features we have
+    #this function is creating a random # of centroids, k
+    #has one parameter k and returns centroid, an array
     centroid = np.random.rand(k,2)
     return centroid
     
 
    
 def assign_centroid(k,centroid,glucose,hemoglobin):
-    #Takes 4 arguments; k,centroids,glucose,hemoglobin
-    #returns distance_array
-    #creates an array with the same amount of rows as centroids
-    #the # of columns is equal to amount of data points for hemoglobin
-   
+#This function is assigning the centroids to a data point
+#Has 4 parameters; k,centroids,glucose,hemoglobin
+#returns min_index
     distance_array = np.zeros((len(hemoglobin),k))
     assignment = np.zeros(len(hemoglobin))
     for i in range(k):
         distance = np.sqrt((hemoglobin-centroid[i,0])**2 + (glucose-centroid[i,1])**2)
-        #this calculates the distance between each data point to each centroid
         distance_array[:,i] = distance
-   
     min_index = np.argmin(distance_array, axis=1)
     assignment[min_index] = min_index
     return min_index
@@ -54,14 +50,15 @@ def update_centroid(centroid,glucose,hemoglobin,k,min_index):
     #Created double for loop, that appended the value of glucose/hemo at which it was 
     #at which hemo that corresponded to certain classification value
     #Found mean for both Class value of hemo and glucose
+    #Has 5 parameters: centroid,glucose,hemoglobin,k,min_index
+    #Returns mean_hemo,mean_gluc,centroid
     mean_hemo = 0
     mean_gluc = 0
     gluc_classValues = np.array([])
     hemo_classValues = np.array([])
 #create new point
 #    new_point = np.random.random_sample()
-    assign_centroid(k,centroid,glucose,hemoglobin)
-    #creates an array with k rows, 2 columns
+#    centroid = assign_centroid(k,centroid,glucose,hemoglobin)
     for i in range (k):
         for j in (range(len(min_index))):
             if min_index[j] == i:
@@ -74,6 +71,11 @@ def update_centroid(centroid,glucose,hemoglobin,k,min_index):
     return (mean_hemo,mean_gluc,centroid)
 
 def iteration(k,trials):
+#This function iterates the updated centroid by running for an amount of times that the user wants
+#Until it hits zero
+#Has 2 paramters: k and trials, the amount of times it will run
+#Returns assign_centroid,centroids,glucose,hemoglobin,classification
+    glucose,hemoglobin,classification = openckdfile()
     glucose,hemoglobin,classification = normalizeData(glucose, hemoglobin, classification)
     centroid = createCentroid(k)
     while trials != 0:
