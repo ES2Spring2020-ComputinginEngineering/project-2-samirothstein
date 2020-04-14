@@ -42,34 +42,16 @@ def assign_centroid(k,centroid,glucose,hemoglobin):
         distance = np.sqrt((hemoglobin-centroid[i,0])**2 + (glucose-centroid[i,1])**2)
         distance_array[:,i] = distance
     min_index = np.argmin(distance_array, axis=1)
-#    assignment[min_index] = min_index
+#   assignment[min_index] = min_index
+    
     return min_index,distance
 
 def update_centroid(k, min_index, glucose, hemoglobin):
-    #First, I created a random point. Then, I assigned the random point to a centroid.
-    #Created double for loop, that appended the value of glucose/hemo at which it was 
-    #at which hemo that corresponded to certain classification value
-    #Found mean for both Class value of hemo and glucose
-    #Has 5 parameters: centroid,glucose,hemoglobin,k,min_index
-    #Returns mean_hemo,mean_gluc,centroid
-#    mean_hemo = 0
-#    mean_gluc = 0
-#    gluc_classValues = np.array([])
-#    hemo_classValues = np.array([])
-##create new point
-##    new_point = np.random.random_sample()
-#    centroid = assign_centroid(k,centroid,glucose,hemoglobin)
-#    for i in range (k):
-#        for j in (range(len(min_index))):
-#            if min_index[j] == i:
-#                gluc_classValues=np.append(gluc_classValues, glucose[j])
-#                hemo_classValues=np.append(hemo_classValues,hemoglobin[j])
-#        mean_gluc = np.mean(gluc_classValues)
-#        mean_hemo = np.mean(hemo_classValues)
-#        centroid[i,1] = mean_gluc
-#        centroid[i,0] = mean_hemo
-#    return (mean_hemo,mean_gluc,centroid)
-   
+    #First, I created a random point for hemoglobin and glucose. Then, I assigned the random point to a centroid.
+    #Found mean for both assignments of glucose and hemoglobin
+    #Updates cluster location based on the average
+    #Has 4 parameters: k, min_index, glucose, hemoglobin
+    #Returns centroid
     hemoglobin_centroid = np.zeros((1))
     glucose_centroid = np.zeros((1))
     centroid = np.zeros((k,2))
@@ -100,23 +82,59 @@ def iteration(k,trials):
 
 
 def graphingKMeans(glucose,hemoglobin,min_index,centroid):
+#This function graphs the KMeans data
+#Uses random colors to graph the different clusters
+#this is a void function
     plt.figure()
     for i in range(min_index.max()+1):
         rcolor = np.random.rand(3,)
-        plt.plot(hemoglobin[min_index==1],glucose[min_index==1],"o",label="Class"+str(i),color=rcolor)
-        plt.plot(centroid[i, 0], centroid[i, 1], "o", label = "Centroid " + str(i), color = rcolor)
+        plt.plot(hemoglobin[min_index==i],glucose[min_index==i],"o",label="Class"+str(i),color=rcolor)
+        plt.plot(centroid[i, 0], centroid[i, 1], "+", label = "Centroid " + str(i), color = rcolor)
+    plt.title("K Means Clustering")
     plt.xlabel("Hemoglobin")
     plt.ylabel("Glucose")
     plt.legend()
     plt.show
+    
+def positives_or_negatives(classification,min_index):
+#This function uses counters to find the amount of true pos, false pos, true neg, and false neg
+#has 2 parameters, classification and min_index
+#returns true_positives, false_positives,true_negatives, false_negatives, CKD, no_CKD
+    true_positives = 0
+    false_positives = 0
+    true_negatives = 0
+    false_negatives = 0
+    CKD = 0
+    no_CKD = 0
+    for i in range(158):
+        if classification[i] == 0 and min_index[i] == 0:
+            CKD += 1
+            true_positives += 1
+        elif classification[i] == 0 and min_index[i] == 1:
+            false_negatives +=1
+            no_CKD += 1
+        elif classification[i] == 1 and min_index[i] == 0:
+            no_CKD +=1
+            false_positives += 1
+        elif classification[i] == 1 and min_index[i] == 1:
+            no_CKD += 1
+            true_negatives += 1
+    return  true_positives, false_positives,true_negatives, false_negatives, CKD, no_CKD
+
+def percentages(true_positives,false_positives,true_negatives, false_negatives, CKD, no_CKD):
+#This function finds the rate for true pos, true neg, false pos, and false neg.
+#Has 6 parameters: true_positives,false_positives,true_negatives, false_negatives, CKD, no_CKD
+#Returns truePos_percent,falsePos_percent,trueNeg_percent,falseNeg_percent
+    truePos_percent = "True positives Rate:" + str((true_positives/CKD)* 100)+"percent"
+    falsePos_percent = "False positives Rate:" + str((false_positives/no_CKD)*100)+ "percent"
+    trueNeg_percent = "True negatives Rate:" + str((true_negatives/no_CKD)*100)+ "percent"
+    falseNeg_percent = "False megatives Rate:" + str((false_negatives/CKD)*100)+ "percent"
+    return truePos_percent,falsePos_percent,trueNeg_percent,falseNeg_percent
+    
+            
+            
+            
+        
 
 
-glucose,hemoglobin,classification = openckdfile()
-hemoglobin_scaled,glucose_scaled,classification = normalizeData(glucose,hemoglobin,classification)
-centroid = createCentroid(2)
-min_index,distance = assign_centroid(2,centroid,glucose_scaled,hemoglobin_scaled)
-#mean_hemo,mean_gluc,centroid = update_centroid(2,centroid,glucose,hemoglobin,min_index)
-centroid = update_centroid(2, min_index, glucose,hemoglobin)
 
-graphingKMeans(glucose,hemoglobin,min_index,centroid)
-#main script
