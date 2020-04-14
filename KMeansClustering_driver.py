@@ -1,4 +1,5 @@
-#Please place your FUNCTION code for step 4 here.
+#Sami Rothstein
+#Project 2 functions
 import KMeansClustering_functions as kmc #Use kmc to call your functions
 glucose,hemoglobin,classification = kmc.openckdfile()
 hemoglobin_scaled,glucose_scaled,classification = kmc.normalizeData(glucose,hemoglobin,classification)

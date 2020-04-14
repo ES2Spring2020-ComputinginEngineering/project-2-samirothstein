@@ -1,4 +1,6 @@
-#Please place your FUNCTION code for step 4 here.
+#Sami Rothstein
+#Project 2, step 4
+#KMeansClustering_functions
 
 import numpy as np
 import pandas as pd
@@ -41,9 +43,7 @@ def assign_centroid(k,centroid,glucose,hemoglobin):
     for i in range(k):
         distance = np.sqrt((hemoglobin-centroid[i,0])**2 + (glucose-centroid[i,1])**2)
         distance_array[:,i] = distance
-    min_index = np.argmin(distance_array, axis=1)
-#   assignment[min_index] = min_index
-    
+    min_index = np.argmin(distance_array, axis=1)  
     return min_index,distance
 
 def update_centroid(k, min_index, glucose, hemoglobin):
@@ -60,7 +60,6 @@ def update_centroid(k, min_index, glucose, hemoglobin):
         glucose_centroid= np.mean(glucose[min_index == i])
         centroid[i] = np.append(hemoglobin_centroid, glucose_centroid) 
     return centroid
-    
     
     
     
